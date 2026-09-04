@@ -132,7 +132,8 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser!
    - Idempotent request caching via cryptographic payload fingerprinting.
 
 2. **Economic Decision Engine**:
-   - Computes expected financial loss: $\mathbb{E}[\text{loss}] = P(\text{abuse}) \times (\text{order\_amount} - \text{salvage\_value}) + \text{shipping\_cost}$.
+   - Computes expected financial loss:
+     $$\mathbb{E}[\text{Loss}] = P(\text{Abuse}) \times (\text{Order Amount} - \text{Salvage Value}) + \text{Shipping Cost}$$
    - Preserves merchant unit economics with automated action assignment:
      - `APPROVE`: Instant frictionless refund.
      - `VERIFY`: Routed to prioritized risk analyst review queue.
