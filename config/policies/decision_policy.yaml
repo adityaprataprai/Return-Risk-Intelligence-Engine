@@ -1,0 +1,17 @@
+# Decision Policy Configuration
+version: "policy-3.0"
+thresholds:
+  approve_max_risk: 0.25
+  verify_max_risk: 0.75
+actions:
+  APPROVE:
+    allow_instant_refund: true
+    requires_manual_review: false
+  VERIFY:
+    allow_instant_refund: false
+    requires_inspection: true
+    requires_manual_review: true
+  BLOCK:
+    allow_instant_refund: false
+    reject_return: true
+    requires_manual_review: false

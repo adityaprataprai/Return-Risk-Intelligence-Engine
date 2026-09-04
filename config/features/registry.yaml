@@ -1,0 +1,603 @@
+# Feature Registry Configuration
+version: "fv-2.1"
+features:
+  # =========================================================================
+  # User Velocity & Serial Return Abuse Features
+  # =========================================================================
+  - name: returns_24h
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: 24h
+    available_at_rule: event.timestamp
+    ttl: 60s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: serial_return_abuse
+
+  - name: returns_7d
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: 7d
+    available_at_rule: event.timestamp
+    ttl: 300s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: serial_return_abuse
+
+  - name: returns_30d
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: serial_return_abuse
+
+  - name: orders_24h
+    entity: user
+    source_event: PURCHASE
+    aggregation: count
+    window: 24h
+    available_at_rule: event.timestamp
+    ttl: 60s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: velocity
+
+  - name: orders_7d
+    entity: user
+    source_event: PURCHASE
+    aggregation: count
+    window: 7d
+    available_at_rule: event.timestamp
+    ttl: 300s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: velocity
+
+  - name: orders_30d
+    entity: user
+    source_event: PURCHASE
+    aggregation: count
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: velocity
+
+  - name: total_orders_all_time
+    entity: user
+    source_event: PURCHASE
+    aggregation: count
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: return_behavior
+
+  - name: total_returns_all_time
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: return_behavior
+
+  - name: return_rate_30d
+    entity: user
+    source_event: CALCULATED
+    aggregation: ratio
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: return_behavior
+
+  - name: return_rate_all_time
+    entity: user
+    source_event: CALCULATED
+    aggregation: ratio
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: return_behavior
+
+  - name: total_spend_30d
+    entity: user
+    source_event: PURCHASE
+    aggregation: sum
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: refund_amount_30d
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: sum
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: refund_ratio_30d
+    entity: user
+    source_event: CALCULATED
+    aggregation: ratio
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: return_behavior
+
+  - name: days_since_last_order
+    entity: user
+    source_event: PURCHASE
+    aggregation: recency
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 60s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: velocity
+
+  - name: days_since_last_return
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: recency
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 60s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: velocity
+
+  # =========================================================================
+  # Wardrobing & Behavioral Timing Features
+  # =========================================================================
+  - name: days_to_return_current
+    entity: return
+    source_event: RETURN_REQUESTED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: wardrobing
+
+  - name: avg_days_to_return_user
+    entity: user
+    source_event: RETURN_REQUESTED
+    aggregation: mean
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: wardrobing
+
+  - name: wardrobing_risk_score
+    entity: return
+    source_event: CALCULATED
+    aggregation: deviation
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: wardrobing
+
+  - name: item_price_vs_user_avg
+    entity: order
+    source_event: CALCULATED
+    aggregation: ratio
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: wardrobing
+
+  - name: category_return_rate_baseline
+    entity: product
+    source_event: CALCULATED
+    aggregation: baseline
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: wardrobing
+
+  - name: user_category_return_rate_diff
+    entity: user
+    source_event: CALCULATED
+    aggregation: deviation
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: wardrobing
+
+  # =========================================================================
+  # Entity-Level Aggregates (Device, Address, Payment)
+  # =========================================================================
+  - name: device_users_count
+    entity: device
+    source_event: CALCULATED
+    aggregation: count
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: device_returns_30d
+    entity: device
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: device_return_rate_30d
+    entity: device
+    source_event: CALCULATED
+    aggregation: ratio
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: address_users_count
+    entity: address
+    source_event: CALCULATED
+    aggregation: count
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: address_returns_30d
+    entity: address
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: payment_users_count
+    entity: payment
+    source_event: CALCULATED
+    aggregation: count
+    window: all_time
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: payment_returns_30d
+    entity: payment
+    source_event: RETURN_REQUESTED
+    aggregation: count
+    window: 30d
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  # =========================================================================
+  # Graph & Network Metrics
+  # =========================================================================
+  - name: linked_accounts_1hop
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: linked_accounts_2hop
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: shared_device_accounts
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: shared_address_accounts
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: shared_payment_accounts
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: high_return_neighbor_count
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: connected_component_size
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: count
+    window: snapshot
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: multi_account_abuse
+
+  - name: graph_last_updated_at
+    entity: graph
+    source_event: GRAPH_UPDATE
+    aggregation: snapshot
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  # =========================================================================
+  # Economic & Transaction Financials
+  # =========================================================================
+  - name: order_amount
+    entity: order
+    source_event: PURCHASE
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: refund_amount
+    entity: return
+    source_event: RETURN_REQUESTED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: cogs
+    entity: product
+    source_event: PURCHASE
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: shipping_cost
+    entity: product
+    source_event: PURCHASE
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: return_shipping_cost
+    entity: product
+    source_event: RETURN_REQUESTED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: handling_cost
+    entity: product
+    source_event: RETURN_REQUESTED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: restocking_cost
+    entity: product
+    source_event: RETURN_REQUESTED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: salvage_value_percentage
+    entity: product
+    source_event: RETURN_REQUESTED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  - name: estimated_return_loss
+    entity: return
+    source_event: CALCULATED
+    aggregation: formula
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: transaction_value
+
+  # =========================================================================
+  # Cold-Start Features (Section 4)
+  # =========================================================================
+  - name: is_first_purchase
+    entity: user
+    source_event: CALCULATED
+    aggregation: flag
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: account_age_hours
+    entity: user
+    source_event: ACCOUNT_CREATED
+    aggregation: raw
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: account_age_under_24h
+    entity: user
+    source_event: ACCOUNT_CREATED
+    aggregation: flag
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 3600s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: has_prior_orders
+    entity: user
+    source_event: CALCULATED
+    aggregation: flag
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: has_prior_returns
+    entity: user
+    source_event: CALCULATED
+    aggregation: flag
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: user_history_count
+    entity: user
+    source_event: CALCULATED
+    aggregation: count
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: baseline_support_count
+    entity: user
+    source_event: CALCULATED
+    aggregation: count
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality
+
+  - name: used_category_fallback
+    entity: user
+    source_event: CALCULATED
+    aggregation: flag
+    window: none
+    available_at_rule: event.timestamp
+    ttl: 86400s
+    version: fv-2.1
+    owner: risk_ml
+    fraud_mechanism: evidence_quality

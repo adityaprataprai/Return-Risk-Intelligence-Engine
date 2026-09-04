@@ -1,0 +1,154 @@
+version: '3.8'
+
+services:
+  # 1. High-Performance Redis 7 In-Memory State & Queue Store
+  redis:
+    image: redis:7-alpine
+    container_name: risk-engine-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # 2. Synchronous Return Scoring & Economic Decision Engine API
+  api:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.api
+    container_name: risk-engine-api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+      - ENABLE_METRICS=true
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # 3. Asynchronous TreeSHAP Explanation Worker
+  shap-worker:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.shap_worker
+    container_name: risk-engine-shap-worker
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # 4. Asynchronous Identity Graph Processor Worker
+  graph-processor:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.graph_processor
+    container_name: risk-engine-graph-processor
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # 5. Dashboard Backend-For-Frontend (BFF) Service
+  dashboard-bff:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.dashboard
+    container_name: risk-engine-dashboard-bff
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - DASHBOARD_DB_PATH=data/dashboard.db
+      - LOG_LEVEL=INFO
+      - ENABLE_METRICS=true
+    ports:
+      - "8001:8001"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # 6. Next.js 14 Investigation Dashboard Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.frontend
+    container_name: risk-engine-frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://dashboard-bff:8001/api
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    depends_on:
+      dashboard-bff:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # 7. Prometheus Metrics Telemetry Scraper
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: risk-engine-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deployment/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api
+      - dashboard-bff
+    restart: unless-stopped
+
+  # 8. Grafana Telemetry Dashboard Visualizer
+  grafana:
+    image: grafana/grafana:latest
+    container_name: risk-engine-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./deployment/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./deployment/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  redis_data:

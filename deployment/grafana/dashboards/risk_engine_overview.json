@@ -1,0 +1,129 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "title": "Return Scoring Request Throughput (req/s)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(risk_score_requests_total[1m])) by (status)",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "title": "Scoring Latency Percentiles (P50, P95, P99)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(risk_score_latency_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "P50 (ms)",
+          "refId": "P50"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(risk_score_latency_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "P95 (ms)",
+          "refId": "P95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(risk_score_latency_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "P99 (ms)",
+          "refId": "P99"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "title": "Economic Decision Distribution",
+      "type": "piechart",
+      "targets": [
+        {
+          "expr": "sum(economic_decision_total) by (action)",
+          "legendFormat": "{{action}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "id": 4,
+      "title": "TreeSHAP Async Worker Queue Depth",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "shap_queue_depth",
+          "legendFormat": "Queue Depth",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "id": 5,
+      "title": "Graph Feature Age (seconds)",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "graph_feature_age_seconds",
+          "legendFormat": "{{graph_version}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["risk-engine", "razorpay"],
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "title": "Razorpay Return-Risk Intelligence Engine - Telemetry",
+  "uid": "razorpay-risk-overview",
+  "version": 1
+}

@@ -1,0 +1,35 @@
+# deployment/Dockerfile.dashboard
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy packaging and install dependencies
+COPY pyproject.toml .
+RUN pip install --no-cache-dir -e ".[dev]" \
+    prometheus-client \
+    prometheus-fastapi-instrumentator
+
+# Copy application source code and configurations
+COPY src/ src/
+COPY config/ config/
+COPY data/ data/
+COPY scripts/ scripts/
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    REDIS_HOST=redis \
+    REDIS_PORT=6379 \
+    DASHBOARD_DB_PATH=data/dashboard.db
+
+EXPOSE 8001
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+CMD ["uvicorn", "src.dashboard.api:app", "--host", "0.0.0.0", "--port", "8001"]

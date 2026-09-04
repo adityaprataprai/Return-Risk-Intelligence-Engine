@@ -1,0 +1,29 @@
+# deployment/Dockerfile.graph_processor
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy packaging and install dependencies
+COPY pyproject.toml .
+RUN pip install --no-cache-dir -e ".[dev]" \
+    prometheus-client
+
+# Copy application source code and configurations
+COPY src/ src/
+COPY config/ config/
+COPY data/ data/
+COPY scripts/ scripts/
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    REDIS_HOST=redis \
+    REDIS_PORT=6379 \
+    REDIS_URL=redis://redis:6379/0
+
+CMD ["python", "scripts/run_graph_processor.py", "--daemon", "--interval", "60"]

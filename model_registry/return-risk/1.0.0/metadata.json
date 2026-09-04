@@ -1,0 +1,27 @@
+{
+  "model_name": "return-risk",
+  "version": "1.0.0",
+  "created_at": "2026-09-03T22:07:33.772869+00:00",
+  "git_commit": "git-unavailable-or-uncommitted",
+  "python_version": "3.14.5",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "training_worlds": [
+    "World A"
+  ],
+  "champion_algorithm": "lightgbm",
+  "calibration_method": "isotonic",
+  "benchmark_scores": {
+    "lightgbm": {
+      "val_auroc": 0.9664452671312427,
+      "val_auprc": 0.7709583304441475
+    },
+    "xgboost": {
+      "val_auroc": 0.9671348722415795,
+      "val_auprc": 0.7762049567906719
+    },
+    "logistic_regression": {
+      "val_auroc": 0.9571755226480837,
+      "val_auprc": 0.7120708944439442
+    }
+  }
+}

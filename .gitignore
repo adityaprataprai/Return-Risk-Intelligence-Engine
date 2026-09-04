@@ -1,0 +1,78 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+/lib/
+/lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and editors
+.idea/
+.vscode/
+.github/
+*.swp
+*.swo
+
+# Testing / Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+!frontend/src/lib/
+!frontend/src/lib/**
+
+# Logs
+logs/
+*.log
+
+# Models & Data (Include trained models and sample datasets for out-of-the-box local execution)
+!model_registry/**/*.joblib
+!model_registry/**/*.pkl
+!data/features/*.parquet
+!data/raw/*.parquet
+
+# Future Roadmap Phases (Phases 10-14 excluded from primary release)
+PHASE_10_FINAL_EXPERIMENTS.md
+PHASE_11_ADVANCED_INFRASTRUCTURE.md
+PHASE_12_REAL_DATA_CALIBRATION.md
+PHASE_13_ADVANCED_EXPLAINABILITY.md
+PHASE_14_PRODUCTION_HARDENING.md

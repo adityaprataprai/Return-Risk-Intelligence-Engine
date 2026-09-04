@@ -1,0 +1,39 @@
+{
+  "auroc": 0.9348,
+  "auprc": 0.6364,
+  "brier_score": 0.0447,
+  "classification_threshold": 0.5,
+  "precision": 0.7736,
+  "recall": 0.453,
+  "f1_score": 0.5714,
+  "recall_at_5pct_fpr": 0.5138,
+  "precision_at_top_10pct": 0.5095,
+  "total_test_samples": 2109,
+  "total_fraud_samples": 181,
+  "scenario_breakdown": {
+    "legitimate": {
+      "total_samples": 1928,
+      "fraud_samples": 0,
+      "detected_samples": 0,
+      "recall": 0.0
+    },
+    "multi_account_abuse": {
+      "total_samples": 18,
+      "fraud_samples": 18,
+      "detected_samples": 4,
+      "recall": 0.2222
+    },
+    "serial_return_abuse": {
+      "total_samples": 142,
+      "fraud_samples": 142,
+      "detected_samples": 70,
+      "recall": 0.493
+    },
+    "wardrobing": {
+      "total_samples": 21,
+      "fraud_samples": 21,
+      "detected_samples": 8,
+      "recall": 0.381
+    }
+  }
+}

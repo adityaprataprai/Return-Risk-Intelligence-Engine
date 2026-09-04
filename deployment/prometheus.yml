@@ -1,0 +1,25 @@
+# deployment/prometheus.yml
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: "risk-scoring-api"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["api:8000"]
+        labels:
+          service: "scoring-api"
+          env: "production"
+
+  - job_name: "dashboard-bff"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["dashboard-bff:8001"]
+        labels:
+          service: "dashboard-bff"
+          env: "production"
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]

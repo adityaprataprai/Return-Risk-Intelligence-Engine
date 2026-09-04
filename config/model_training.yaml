@@ -1,0 +1,54 @@
+# Model Training and Calibration Configuration
+model:
+  type: lightgbm
+  objective: binary
+  metric: ["auc", "binary_logloss"]
+  num_leaves: 63
+  learning_rate: 0.05
+  n_estimators: 500
+  early_stopping_rounds: 50
+  reg_alpha: 0.1
+  reg_lambda: 0.1
+  min_child_samples: 50
+  subsample: 0.9
+  colsample_bytree: 0.9
+  random_state: 42
+
+calibration:
+  method: isotonic
+  validation_split: temporal
+  cv_folds: 5
+
+benchmarks:
+  xgboost:
+    n_estimators: 300
+    max_depth: 6
+    learning_rate: 0.05
+    early_stopping_rounds: 50
+    subsample: 0.9
+    colsample_bytree: 0.9
+    random_state: 42
+  logistic_regression:
+    max_iter: 1000
+    random_state: 42
+
+data:
+  features_dir: data/features
+  train_file: train_features.parquet
+  validation_file: validation_features.parquet
+  test_file: test_features.parquet
+  ground_truth_file: data/ground_truth/hidden_labels.parquet
+  exclude_columns:
+    - return_id
+    - transaction_id
+    - user_id
+    - timestamp
+    - request_time
+    - graph_last_updated_at
+    - is_fraud
+    - split
+
+registry:
+  registry_dir: model_registry
+  model_name: return-risk
+  version: "1.0.0"

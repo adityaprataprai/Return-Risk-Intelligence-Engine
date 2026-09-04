@@ -1,0 +1,31 @@
+# Product Economic Profiles Configuration
+version: "product-econ-4.2"
+categories:
+  electronics:
+    cogs_rate: 0.65
+    shipping_cost: 150.0
+    return_shipping_cost: 180.0
+    handling_cost: 80.0
+    restocking_cost_rate: 0.08
+    salvage_value_percentage: 0.40
+  fashion:
+    cogs_rate: 0.45
+    shipping_cost: 90.0
+    return_shipping_cost: 110.0
+    handling_cost: 60.0
+    restocking_cost_rate: 0.05
+    salvage_value_percentage: 0.60
+  home:
+    cogs_rate: 0.55
+    shipping_cost: 200.0
+    return_shipping_cost: 240.0
+    handling_cost: 100.0
+    restocking_cost_rate: 0.06
+    salvage_value_percentage: 0.50
+  default:
+    cogs_rate: 0.50
+    shipping_cost: 100.0
+    return_shipping_cost: 120.0
+    handling_cost: 70.0
+    restocking_cost_rate: 0.05
+    salvage_value_percentage: 0.50

@@ -1,0 +1,29 @@
+simulation_version: "0.1.0"
+world_id: "A"
+random_seed: 42
+
+population:
+  num_customers: 10000
+  num_products: 500
+  num_sellers: 50
+  num_devices: 12000
+  num_addresses: 8000
+  num_payments: 9000
+
+fraud_mix:
+  serial_return_abuse: 0.4
+  multi_account_abuse: 0.3
+  wardrobing: 0.3
+
+difficulty:
+  easy: 0.4
+  moderate: 0.4
+  stealthy: 0.2
+
+hard_negatives:
+  high_return_legit: 0.03
+  family_shared_household: 0.02
+
+transaction_scale: 100000
+simulation_days: 180
+start_date: "2026-03-01T00:00:00Z"

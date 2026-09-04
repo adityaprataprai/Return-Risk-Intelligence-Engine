@@ -1,0 +1,9 @@
+# Merchant Economic Profiles
+version: "merchant-econ-1.7"
+merchants:
+  m_default:
+    margin_rate: 0.15
+    customer_acquisition_cost: 450.0
+    churn_cost_multiplier: 2.5
+    handling_cost: 50.0
+    restocking_cost_rate: 0.05
